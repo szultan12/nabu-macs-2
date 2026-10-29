@@ -1,5 +1,13 @@
 # Változásnapló
 
+## 2.0.0-dev.18
+
+- Explicit Lovelace-érzelem egységes elsőbbsége init/config/mood üzenetekben.
+- Nyugalmi Assist-állapot nem írja felül a kézi érzelmet vagy a HA-selectet.
+- Mentett shocked + idle select/Assist és stale init/config/mood sorrendek
+  valódi GLB böngészős regressziója.
+
+
 ## HACS metaadat-javítás (dev.17 után)
 
 - Alapértelmezett ág elrejtése: hide_default_branch true; ZIP-release mód változatlan.

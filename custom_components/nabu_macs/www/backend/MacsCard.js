@@ -264,6 +264,11 @@ export class MacsCard extends HTMLElement {
         this._messagePoster.post(payload);
     }
 
+    _resolveMood(candidate) {
+        if (Object.hasOwn(this._config, "emotion")) return normalizeEmotionConfig(this._config).emotion;
+        return normMood(candidate ?? this._hass?.states?.[resolveEntityId(this._config, MOOD_ENTITY_ID)]?.state ?? "idle");
+    }
+
     _buildConfigPayload() {
         this._updatePreviewState();
         const enabled = !!this._config.assist_pipeline_enabled;
@@ -279,7 +284,7 @@ export class MacsCard extends HTMLElement {
             // Send one resolved mood through both the config and mood channels.
             // An explicit Lovelace emotion is the manual source; HA's select is
             // used when no emotion was saved in the card config.
-            emotion: normalizeEmotionConfig({ emotion: this._pendingState?.mood ?? this._config.emotion }).emotion,
+            emotion: this._resolveMood(this._pendingState?.mood),
             ...normalizeMotionConfig(this._config),
             ...normalizeAvatarConfig(this._config),
             ...normalizePersonalityConfig(this._config),
@@ -322,7 +327,7 @@ export class MacsCard extends HTMLElement {
             recipient: "frontend",
             config,
             media: mediaPlayerSnapshot(this._hass,this._config),
-            mood: snapshot.mood ?? null,
+            mood: config.emotion,
             animations_enabled: typeof snapshot.animationsEnabled === "boolean" ? snapshot.animationsEnabled : null,
         };
         const bridgePayload = {
@@ -340,7 +345,7 @@ export class MacsCard extends HTMLElement {
         this._lastBridgeConfigSignature = JSON.stringify({ type: "nabu_macs:config", recipient: "assist-bridge", ...bridgeConfig });
         this._lastTurnsSignature = JSON.stringify(turns);
 
-        this._lastMood = snapshot.mood;
+        this._lastMood = config.emotion;
         this._lastAnimationsEnabled = typeof snapshot.animationsEnabled === "boolean"
             ? snapshot.animationsEnabled
             : this._lastAnimationsEnabled;
@@ -349,7 +354,7 @@ export class MacsCard extends HTMLElement {
     _flushPendingState() {
         const snapshot = this._pendingState;
         if (!snapshot) return;
-        const mood = snapshot.mood;
+        const mood = this._resolveMood(snapshot.mood);
         if (mood && mood !== this._lastMood) {
             this._lastMood = mood;
             this._sendMoodToIframe(mood);
@@ -402,7 +407,7 @@ export class MacsCard extends HTMLElement {
     }
 
     _sendMoodToIframe(mood, options = {}) {
-        const payload = { type: "nabu_macs:mood", recipient: "frontend", mood };
+        const payload = { type: "nabu_macs:mood", recipient: "frontend", mood: this._resolveMood(mood) };
         // reset_sleep tells the iframe to reset its idle/sleep timers.
         if (options.resetSleep) payload.reset_sleep = true;
         this._postToIframe(payload);
@@ -640,7 +645,8 @@ export class MacsCard extends HTMLElement {
         const overrideMood = this._assistSatelliteOutcome?.getOverrideMood?.();
         const assistEnabled = !!this._config?.assist_satellite_enabled;
         const assistActive = assistEnabled && assistMood && assistMood !== "idle";
-        let mood = overrideMood ? overrideMood : ((assistEnabled && assistMood) ? assistMood : baseMood);
+        // Explicit manual selection wins even when the Assist satellite reports idle.
+        let mood = this._resolveMood(overrideMood ? overrideMood : (assistActive ? assistMood : baseMood));
 
         const base = safeUrl(this._config.url);
         if (this._isPreview) {

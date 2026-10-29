@@ -13,26 +13,47 @@ try{
  await page.route('**/*',route=>{if(new URL(route.request().url()).origin!=='http://127.0.0.1:8130'){errors.push('External request blocked');return route.abort();}return route.continue();});
  await page.goto('http://127.0.0.1:8130/nabu_macs/preview.html');
  await page.evaluate(async()=>{
-   await import('/nabu_macs/macs.js?v=2.0.0-dev.17');
+   await import('/nabu_macs/macs.js?v=2.0.0-dev.18');
    const Card=customElements.get('nabu-macs-card'),editor=Card.getConfigElement(),card=document.createElement('nabu-macs-card');
-   const config={type:'custom:nabu-macs-card',emotion:'happy',emotion_debug:true,emotion_enabled:true,emotion_intensity:100,emotion_mix:{idle:100},transition_ms:0,reduced_motion:false,natural_motion_enabled:false,diagnostics_enabled:true,speech_enabled:true,speech_style:'auto',speech_speed:1,speech_media_player:'media_player.test_speech',assist_pipeline_enabled:false,assist_satellite_enabled:false};
-   const hass={states:{'select.nabu_macs_mood':{state:'idle'},'switch.nabu_macs_animations_enabled':{state:'on'}},connection:{subscribeEvents:async()=>()=>{}},callWS:async()=>({pipelines:[]})};
+   const config={type:'custom:nabu-macs-card',emotion:'shocked',emotion_debug:true,emotion_enabled:true,emotion_intensity:100,emotion_mix:{idle:100},transition_ms:0,reduced_motion:false,natural_motion_enabled:false,diagnostics_enabled:true,speech_enabled:true,speech_style:'auto',speech_speed:1,speech_media_player:'media_player.test_speech',assist_pipeline_enabled:false,assist_satellite_enabled:true,assist_satellite_entity:'assist_satellite.test'};
+   const hass={states:{'assist_satellite.test':{state:'idle'},'select.nabu_macs_mood':{state:'idle'},'switch.nabu_macs_animations_enabled':{state:'on'}},connection:{subscribeEvents:async()=>()=>{}},callWS:async()=>({pipelines:[]})};
+   const initMessages=[];const post=card._postToIframe.bind(card);card._postToIframe=p=>{if(p.type==='nabu_macs:init'&&p.recipient==='frontend')initMessages.push(p);post(p);};
    card.setConfig(config);card.style.cssText='display:block;width:540px;height:600px;';
    const editorHost=document.createElement('section');editorHost.style.cssText='box-sizing:border-box;width:540px;max-width:100%;padding:12px;border:1px solid #777;';
    editor.hass=hass;editor.setConfig(config);editorHost.append(editor);document.body.replaceChildren(card,editorHost);card.hass=hass;
    editor.addEventListener('config-changed',event=>card.setConfig(event.detail.config));
-   window.nabuLovelaceEmotionTest={card,editor,hass,config};
+   window.nabuLovelaceEmotionTest={card,editor,hass,config,initMessages};
  });
  await page.waitForFunction(()=>window.nabuLovelaceEmotionTest?.card?._iframeBootstrapped===true,{},{timeout:60000});
  const frame=page.frames().find(candidate=>candidate.url().includes('/macs.html'));
  assert.ok(frame,'real Lovelace card iframe is present');
  await frame.waitForFunction(()=>document.getElementById('avatar3d')?.dataset.rig==='calibrated',null,{timeout:60000});
- await frame.waitForFunction(()=>window.nabuEmotionSnapshot?.().rig.meshes.some(m=>m.smile>.7));
+ await frame.waitForFunction(()=>window.nabuEmotionSnapshot?.().rig.meshes.some(m=>m.jawOpen>.2));
+ const initial=await page.evaluate(()=>window.nabuLovelaceEmotionTest.initMessages);
+ assert.ok(initial.length>0);for(const msg of initial){assert.equal(msg.mood,'shocked');assert.equal(msg.config.emotion,'shocked');}
  const snapshot=await frame.evaluate(()=>window.nabuEmotionSnapshot());
- assert.equal(snapshot.controller.mood,'happy');
+ assert.equal(snapshot.controller.mood,'shocked');
  assert.equal(Object.keys(snapshot.rig.meshes[0]).length,19);
  assert.ok(!JSON.stringify(snapshot).includes('media_player'));
- const moods=['surprised','happy','angry','laughing','sleeping'],images={},morphs={};
+ // Repeat stale init/config/mood delivery in both orders: manual config is authoritative.
+ for (const order of [['init','config','mood'],['mood','config','init']]) {
+   const sent=await page.evaluate(order=>{
+     const {card,hass}=window.nabuLovelaceEmotionTest, messages=[];
+     const original=card._postToIframe.bind(card);
+     card._postToIframe=p=>{if(p.recipient==='frontend')messages.push(p);original(p);};
+     card._pendingState={mood:'idle',animationsEnabled:true};
+     for(const kind of order) {
+       if(kind==='init')card._sendInitToIframe({mood:'idle',animationsEnabled:true});
+       if(kind==='config')card._sendConfigToIframe(true);
+       if(kind==='mood')card._sendMoodToIframe('idle');
+     }
+     card.hass=hass;card._postToIframe=original;
+     return messages.filter(p=>['nabu_macs:init','nabu_macs:config','nabu_macs:mood'].includes(p.type));
+   },order);
+   for(const msg of sent){if(msg.type==='nabu_macs:init'){assert.equal(msg.mood,'shocked');assert.equal(msg.config.emotion,'shocked');assert.deepEqual(msg.config.emotion_mix,{});}else assert.equal(msg.emotion||msg.mood,'shocked');}
+   await frame.waitForFunction(()=>window.nabuEmotionSnapshot().controller.mood==='shocked');
+ }
+ const moods=['surprised' ,'happy','angry','laughing','sleeping'],images={},morphs={};
  for(const mood of moods){
    await page.evaluate(value=>{const control=window.nabuLovelaceEmotionTest.editor.shadowRoot.querySelector('#setting-emotion');control.value=value;control.dispatchEvent(new Event('change',{bubbles:true}));},mood);
    await page.waitForFunction(value=>document.querySelector('nabu-macs-card')?._lastMood===value,mood,{timeout:10000});
@@ -78,6 +99,8 @@ try{
  await page.evaluate(()=>{const {card,hass}=window.nabuLovelaceEmotionTest;hass.states['media_player.test_speech']={state:'paused'};card.hass=hass;});
  await frame.waitForFunction(()=>Number(JSON.parse(document.getElementById('avatar3d').dataset.applied||'{}').jawOpen)<.04,null,{timeout:5000});
  assert.ok(mediaPlayingJaw>.15,'real HA media_player playing snapshot starts mouth movement');
+ await page.evaluate(()=>{const {card,hass}=window.nabuLovelaceEmotionTest;const config={...card._config,emotion_mix:{}};delete config.emotion;card.setConfig(config);hass.states['select.nabu_macs_mood']={state:'happy'};card.hass=hass;});
+ await frame.waitForFunction(()=>window.nabuEmotionSnapshot().controller.mood==='happy'&&window.nabuEmotionSnapshot().rig.meshes.some(m=>m.smile>.7));
  assert.deepEqual(errors,[]);
  await fs.writeFile(path.join(screenshots,'lovelace-emotion-qa.json'),JSON.stringify({moods,renderedThrough:'registered editor config-changed → MacsCard.setConfig → authenticated iframe postMessage → emotionController → GLB morph influences',distinct,manualMoodWinsOverHaSelect:true,speechTests,mediaPlayingJaw,mediaPausedJaw:(await readApplied()).jawOpen,errors},null,2));
  const gallery=`<!doctype html><html lang="hu"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nabu Lovelace érzelem-útvonal teszt</title><style>body{margin:24px;background:#0b1118;color:#e6f1fa;font:16px system-ui}main{max-width:1200px;margin:auto}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}figure{margin:0;background:#131c25;border-radius:12px;padding:12px}img{display:block;width:100%;border-radius:8px}figcaption{padding:8px 2px;font-weight:600}</style><main><h1>Lovelace editor → kártya → iframe → 3D-avatar</h1><p>Az alábbi renderképeket a tényleges regisztrált Nabu kártyaszerkesztőből kiválasztott érzelmekkel rögzítette az offline Playwright-teszt.</p><section>${moods.map(mood=>`<figure><img src="screenshots/lovelace-emotion-${mood}.png" alt="${mood}"><figcaption>${mood}</figcaption></figure>`).join('')}</section><p><a href="screenshots/lovelace-emotion-qa.json">Teljes automatizált mérési jelentés</a></p></main></html>`;
