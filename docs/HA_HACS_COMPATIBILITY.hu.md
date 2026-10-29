@@ -10,7 +10,7 @@ nem bizonyít élő Home Assistant-kompatibilitást.
 |---|---|---|
 | Elkülönített domain és útvonalak | PASS | `nabu_macs`, `/nabu_macs/`, saját `custom:nabu-macs-card`; izolációs tesztek |
 | Eredeti `custom_components/macs` változatlansága | PASS | SHA-256-alapú megőrzési ellenőrzések a tesztkészletben; a fázisban nem módosult |
-| Manifest JSON, szükséges HA mezők és verzió | PASS / korlátozott | JSON és statikus tesztek; `2.0.0-dev.16` verzió, `config_flow`, `iot_class`, domain/name megvan |
+| Manifest JSON, szükséges HA mezők és verzió | PASS / korlátozott | JSON és statikus tesztek; `2.0.0-dev.16`, `config_flow`, `iot_class`, `integration_type: helper`, domain/name megvan |
 | Manifest HACS mezők | PASS, statikus | A Nabu saját dokumentáció/issue URL-t és `@szultan12` codeowner-t kapott; valódi URL-ek csak publikálás után elérhetők |
 | Brand ikon | PASS, helyi | Saját, 256×256 PNG a `custom_components/nabu_macs/brand/icon.png` útvonalon; Home Assistant brands külső nyilvántartása nincs ellenőrizve |
 | Minimális Home Assistant verzió | NOT TESTED | Sem a manifest, sem a HACS metadata nem rögzíti; nincs régebbi verzióval végzett próba |
@@ -33,7 +33,8 @@ nem bizonyít élő Home Assistant-kompatibilitást.
 | `hacs.json` és HACS manifest | PASS, statikus | `name`, ZIP release/asset neve, `hide_default_branch=false`; manifest dokumentáció, issue tracker, codeowner és verzió ellenőrizve |
 | HACS Action / `hassfest` | NOT TESTED | Nincs helyben `hacs`/HACS-validátor, Docker CLI vagy GitHub Actions futtatás. Futtatandó a publikáció után; statikus ellenőrzés nem HACS-validáció |
 | HACS custom repository hozzáadás | NOT TESTED | A megadott GitHub repository üres és privát. HACS csak nyilvános GitHub repositoryt támogat |
-| HACS alapértelmezett katalógus licencellenőrzés | FAIL / feloldatlan | Upstream CC BY-NC-SA 4.0 nem OSI-approved (NonCommercial feltétel); nem címkézhető át engedély nélkül |
+| Gyökér licenc felismerése | PASS, statikus | `LICENSE` teljes MIT-szöveg és Copyright (c) 2026 szultan12; a MACS-eredetű források licencét a csomagban megőrzött `LICENSE.upstream` külön kezeli; HACS Action megerősítése még szükséges |
+| MACS-forrás licencmegőrzése | PASS, fájlszinten jelölve | A CC BY-NC-SA 4.0 licenc teljes szövege megmarad; a Nabu MIT-licenc nem vonatkozik a MACS upstreamből származó részekre |
 | Izolált Docker labor | NOT TESTED | Docker CLI/Desktop nincs; Compose YAML csak korábbi statikus vizsgálattal lett lefedve |
 | Raspberry Pi 4 CPU/GPU/memória | NOT TESTED | Pi hardveren mérés nem történt; 30/60 FPS célérték, nem teljesítményígéret |
 | GitHub Release / publikus kiadás | NOT TESTED | Helyi ZIP előkészítve, távoli GitHub kiadás és publikálás nem történt |
@@ -61,8 +62,10 @@ nyilvánítanánk.
    szolgáltatások `async_setup`-beli regisztrációját,
    majd futtasd a valódi izolált HA telepítés, reload, eltávolítás és frontend
    ellenőrzést.
-5. Tisztázd, hogy a CC BY-NC-SA licenc megfelel-e a kívánt HACS csatornának; a
-   HACS alapértelmezett katalógushoz ez nem megfelelő.
+5. Push után ellenőrizd, hogy a HACS Action a gyökér MIT licencet elfogadja-e;
+   a gyökér licencfelismerése önmagában nem bizonyítja a teljes integráció
+   kiadhatóságát, és a CC-licencelt fájlok terjesztési feltételeit is be kell
+   tartani.
 6. Docker laborral és Raspberry Pi 4 kioszkkal végezz runtime és teljesítmény QA-t.
    Csak ezután készíts publikus HACS Release-t és külön éles telepítési tervet.
    E munkamenet nem kapcsolódott éles HA-hoz.

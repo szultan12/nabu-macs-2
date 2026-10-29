@@ -14,10 +14,11 @@ repositoryba.
 
 ## Feltöltés előtt kötelező
 
-- Ellenőrizd, hogy a MACS CC BY-NC-SA 4.0 licencének terjesztési feltételei
-  elfogadhatók. A NonCommercial licenc nem OSI-jóváhagyott, ezért a HACS
-  alapértelmezett katalógus licencellenőrzésén nem megy át. A licencet ne cseréld
-  le jogtulajdonosi engedély nélkül.
+- A gyökér `LICENSE` a Nabu saját kódjának MIT-licencét tartalmazza. A MACS
+  upstreamből származó kódok CC BY-NC-SA 4.0 licencét és forrásmegjelölését
+  őrizd meg; a Nabu licencváltása ezekre nem terjed ki. A teljes upstream
+  licencnek a `custom_components/nabu_macs/LICENSE.upstream` fájlban is meg kell
+  maradnia a HACS kiadási csomagban.
 - Tisztázd a Tripo GLB modell és textúrái nyilvános repositoryban történő
   terjesztési jogát. A jelenlegi forrás nem tartalmaz erre külön licencet.
 - A megadott GitHub repository még privát/üres állapotú. HACS-hoz nyilvános
@@ -42,7 +43,9 @@ A HACS ágban szerepeljen:
 
 - `custom_components/nabu_macs/` (Python, `www/`, GLB-modellek, Three.js, CSS,
   képek és saját brand ikon)
-- `hacs.json`, `README.md`, `LICENSE`, `NOTICE.md`, `CHANGELOG.md`
+- `hacs.json`, `README.md`, `LICENSE`, `LICENSE.upstream`, `NOTICE.md`,
+  `CHANGELOG.md`; a kiadási archívum integrációs gyökerében a saját `LICENSE`,
+  `LICENSE.upstream`, `NOTICE.md` és a Three.js/meshopt licencmegjelölések
 - HACS/HA telepítési és kompatibilitási dokumentáció
 - HACS Action és hassfest workflow a későbbi CI-validációhoz
 

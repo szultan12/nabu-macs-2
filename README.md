@@ -46,9 +46,15 @@ egyedi entitásazonosítót, és nem igényel tokent vagy külső szolgáltatás
   HACS Action és hassfest még ellenőrzendő.
 - A HACS ZIP-kiadás az adott verziójú GitHub Release-hez csatolt
   `nabu_macs.zip` fájlt használja.
-- A forrás upstream licencfeltételei CC BY-NC-SA 4.0; ez nem OSI-jóváhagyott
-  licenc. A HACS alapértelmezett katalógusába való felvételt ez megakadályozza.
-- A Tripo GLB és textúrái nyilvános terjesztési jogát külön tisztázni kell.
+- A Nabu saját forráskódjára MIT licenc vonatkozik (Copyright (c) 2026
+  szultan12). A MACS-ből származó anyagokra a megőrzött CC BY-NC-SA 4.0
+  feltételek érvényesek; a részletes hatókört lásd a [NOTICE](NOTICE.md) és a
+  csomagban lévő `custom_components/nabu_macs/LICENSE.upstream` fájlban.
+- A Three.js és a meshopt decoder saját licencét a vendored fájlok mellett
+  őrizzük: [Three.js MIT licenc](custom_components/nabu_macs/www/vendor/THREE-LICENSE.txt)
+  és [forrásjegyzék](custom_components/nabu_macs/www/vendor/sources.json).
+- A Tripo GLB és textúrái nem részei automatikusan sem a Nabu MIT-, sem a MACS
+  CC-licencnek; nyilvános terjesztési joguk külön tisztázandó.
 
 Részletek: [HA/HACS kompatibilitási jelentés](docs/HA_HACS_COMPATIBILITY.hu.md),
 [publikációs ellenőrzőlista](docs/HACS_PUBLISH_CHECKLIST.hu.md),

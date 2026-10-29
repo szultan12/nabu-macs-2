@@ -2,6 +2,11 @@
 
 ## 2.0.0-dev.16 – 2026-10-29
 
+- A Nabu saját forráskódjának MIT-licence és szerzői jogi sora; a MACS upstream
+  CC BY-NC-SA, a vendored függőségek és a Tripo-modell eltérő jogállása külön
+  dokumentálva és megőrizve.
+- A manifestben a vizuális automatizálási entitásokhoz illő hivatalos
+  `integration_type: helper` megadva.
 - Hassfest translation/manifest preflight javítások: rendezett manifestkulcsok,
   üres config flow-hoz illesztett `strings.json`, teljes angol és magyar fordítás.
 - HACS-publikációs metaadatok és külön, csak Nabu integrációt tartalmazó

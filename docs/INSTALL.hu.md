@@ -23,6 +23,16 @@ Publikáció előtt ellenőrizd a [HACS/HA kompatibilitási jelentést](HA_HACS_
 különösen a licenciazást, a GLB terjesztési jogát, a hassfestet és a valódi HA
 betöltési tesztet.
 
+### Licenc és erőforrások
+
+A gyökér `LICENSE` a Nabu saját forráskódját MIT alatt adja ki (Copyright (c)
+2026 szultan12). A MACS-ből származó részek CC BY-NC-SA 4.0 alatt maradnak; ezek
+teljes licencszövege az integráció `LICENSE.upstream` fájljában van, amelyet a
+kiadási csomagban is meg kell őrizni. A Three.js és meshopt licencét a vendored
+fájlok mellett tartjuk meg. A Tripo GLB-modell és textúrák külön erőforrások,
+nyilvános terjesztési jogukat a forráskód MIT-licence nem rendezi. Részletek:
+[NOTICE](../NOTICE.md).
+
 ## Egyéni repository hozzáadása HACS-hoz
 
 1. A GitHub tulajdonosa tegye nyilvánossá a repositoryt, miután a forrás, a
