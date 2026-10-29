@@ -427,13 +427,20 @@ export class MacsCard extends HTMLElement {
         if (signature === this._lastTurnsSignature) return;
         this._lastTurnsSignature = signature;
         this._postToIframe({ type: "nabu_macs:turns", recipient: "all", turns: payloadTurns });
+        const latest=this._pipelineTracker?.getTurns?.()[0];
+        const subtitleText=latest ? [latest.heard && `Te: ${latest.heard}`, latest.reply && `Nabu: ${latest.reply}`].filter(Boolean).join('\n') : '';
+        const subtitleKey=JSON.stringify([latest?.runId,subtitleText]);
+        if(this._iframeBootstrapped && this._config.subtitles_enabled === true && subtitleKey!==this._lastSubtitleKey){
+            this._lastSubtitleKey=subtitleKey;
+            this._postToIframe({type:'nabu_macs:subtitle',recipient:'frontend',text:subtitleText});
+        }
         const turn=this._pipelineTracker?.getTurns?.().find(t=>t.reply||t.error);
         const outcome=turn ? `${turn.runId}:${turn.error?'failure':'success'}` : '';
         const previous=this._lastPipelineOutcome;
         this._lastPipelineOutcome=outcome;
         if(outcome && outcome!==previous && previous!==undefined && this._iframeBootstrapped){
             this._postToIframe({type:'nabu_macs:reaction',recipient:'frontend',trigger:turn.error?'assist_failure':'assist_success'});
-            if(turn.reply)this._postToIframe({type:'nabu_macs:subtitle',recipient:'frontend',text:turn.reply});
+
         }
     }
 
@@ -595,8 +602,8 @@ export class MacsCard extends HTMLElement {
         // Only re-apply config if the pipeline settings changed since last time we applied it
         const enabled = !!this._config?.assist_pipeline_enabled;
         const pid = this._config?.assist_pipeline_entity || "";
-        if (!this._lastPipelineCfg || this._lastPipelineCfg.enabled !== enabled || this._lastPipelineCfg.pid !== pid) {
-            this._lastPipelineCfg = { enabled, pid};
+        if (!this._lastPipelineCfg || this._lastPipelineCfg.enabled !== enabled || this._lastPipelineCfg.pid !== pid || this._lastPipelineCfg.satellite !== this._config.assist_satellite_entity || this._lastPipelineCfg.media !== this._config.speech_media_player) {
+            this._lastPipelineCfg = { enabled, pid, satellite:this._config.assist_satellite_entity,media:this._config.speech_media_player};
             this._pipelineTracker?.setConfig?.(this._config);
         }
 

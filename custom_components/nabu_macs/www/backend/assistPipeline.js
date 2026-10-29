@@ -15,6 +15,8 @@ export class AssistPipelineTracker {
         this._hass = null;
         this._enabled = false;
         this._pipelineId = '';
+        this._satelliteId = '';
+        this._mediaId = '';
         this._maxTurns = 2;
         this._turns = [];
         this._disposed = false;
@@ -58,7 +60,10 @@ export class AssistPipelineTracker {
         if (this._disposed) return;
         const enabled = !!config?.assist_pipeline_enabled;
         const pid = enabled ? String(config?.assist_pipeline_entity || '').trim() : '';
-        const changed = enabled !== this._enabled || pid !== this._pipelineId;
+        const satelliteId = String(config?.assist_satellite_entity || '').trim();
+        const mediaId = String(config?.speech_media_player || '').trim();
+        const changed = enabled !== this._enabled || pid !== this._pipelineId || satelliteId !== this._satelliteId || mediaId !== this._mediaId;
+        this._satelliteId = satelliteId; this._mediaId = mediaId;
         const maxTurns = normalizeMaxTurns(config?.max_turns);
         const limitChanged = maxTurns !== this._maxTurns;
         if (changed) {
@@ -104,6 +109,7 @@ export class AssistPipelineTracker {
         // Pull just the pieces we render from pipeline debug events
         let heard = "", reply = "", error = "", ts = "";
         for (const ev of (events || [])) {
+            if (!ev || typeof ev !== "object") continue;
             if (!ts && ev.timestamp) ts = ev.timestamp;
 
             if (!heard && ev.type === "intent-start") heard = ev.data?.intent_input || "";
@@ -111,9 +117,11 @@ export class AssistPipelineTracker {
 
             if (ev.type === "intent-end") reply = ev.data?.intent_output?.response?.speech?.plain?.speech || reply;
 
+            if (ev.type === "tts-start" && !reply) reply = ev.data?.tts_input || "";
             if (ev.type === "error") error = `${ev.data?.code || "error"}: ${ev.data?.message || ""}`.trim();
         }
-        return { heard, reply, error, ts };
+        const text = v => typeof v === "string" ? v.slice(0,10000) : "";
+        return { heard:text(heard), reply:text(reply), error:text(error), ts:text(ts) };
     }
 
 
@@ -195,7 +203,8 @@ export class AssistPipelineTracker {
             if (token !== this._subToken || !this.pipelineEnabled()) return null;
             return connection.subscribeEvents(ev => {
                 if (token !== this._subToken || !this.pipelineEnabled()) return;
-                if (ev?.data?.entity_id === CONVERSATION_ENTITY_ID) this.triggerFetchNewest();
+                const id = ev?.data?.entity_id;
+                if (id && [CONVERSATION_ENTITY_ID, this._satelliteId, this._mediaId].includes(id)) this.triggerFetchNewest();
             }, 'state_changed');
         }).then(unsub => {
             if (typeof unsub !== 'function') return;
