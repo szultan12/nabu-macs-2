@@ -71,7 +71,7 @@ export function createAvatar3D({doc=document}={}) {
         host.hidden=failed;
         if(model&&!failed){label('3D arcrig · 26 érzelem · stilizált szemmozgás');resize();}else if(!failed)void load();
     }
-    return {configure,
+    return {configure, getEmotionSnapshot:()=>({loaded:!!model,failed,missing:rig?.missing ?? [],meshes:rig?.snapshot() ?? []}),
         sample(p,overlay={},motion={}){
             if(!model||failed)return;
             if(!rig.missing.length){const result=rig.apply(p,overlay,motion.diagnostics_enabled===true);dirty||=result.changed;host.dataset.weights=JSON.stringify(result.weights);if(result.applied)host.dataset.applied=JSON.stringify(result.applied);}

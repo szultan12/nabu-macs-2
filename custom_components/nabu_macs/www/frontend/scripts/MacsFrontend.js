@@ -9,18 +9,27 @@ const { createAvatar3D } = await importWithVersion("./avatar3d.js");
 const { createMoodFx } = await importWithVersion("./moodFx.js");
 const { createDebugger, setDebugOverride } = await importWithVersion("../../shared/debugger.js");
 const debug = createDebugger(import.meta.url);
+const { MOODS } = await importWithVersion("../../shared/emotions.js");
 
+let emotionDebug=false, lastEmotionTrace=-Infinity;
 let paused = false, disposed = false, readySent = false;
 const poster = new MessagePoster({sender:"frontend", recipient:"backend", getRecipientWindow:()=>window.parent, getTargetOrigin:()=>window.location.origin});
 const avatar = createAvatar3D();
 const notification = createNotificationFx();
 let coordinator = createAnimationCoordinator({onReaction:item=>notification.reaction(item),onSpeechTestState:active=>poster.post({type:"nabu_macs:speech_test_state",recipient:"backend",active})});
-const emotion = createEmotionController({onPose:(p,o,m)=>avatar.sample(p,o,m),onDiagnostics:stats=>poster.post({type:"nabu_macs:diagnostics",recipient:"backend",...stats,...coordinator?.getState()})});
+const emotion = createEmotionController({onPose:(p,o,m)=>{avatar.sample(p,o,m);if(emotionDebug && performance.now()-lastEmotionTrace>=1000){lastEmotionTrace=performance.now();console.info('[Nabu emotion] rendered',emotionSnapshot());}},onDiagnostics:stats=>poster.post({type:"nabu_macs:diagnostics",recipient:"backend",...stats,...coordinator?.getState()})});
 emotion.setLayer?.((time,pose,mood)=>coordinator.sample(time,pose,mood));
 const moodFx = createMoodFx({onMoodChange:mood=>{emotion.setMood(mood);coordinator.setBaseMood(mood);}});
 
+function emotionSnapshot() {
+    const state=emotion.getState();
+    return {controller:state,rig:avatar.getEmotionSnapshot(),reactionMood:MOODS.includes(coordinator.getState().reactions?.active?.mood)?coordinator.getState().reactions.active.mood:null};
+}
 function applyConfig(config={}) {
     if (!config || typeof config !== "object") return;
+    emotionDebug=config.emotion_debug===true;
+    if(emotionDebug) window.nabuEmotionSnapshot=emotionSnapshot;
+    else delete window.nabuEmotionSnapshot;
     emotion.configure(config); coordinator.configure(config); notification.configure(config); avatar.configure(config);
     if (typeof config.emotion === "string") moodFx.setBaseMood(config.emotion);
     if (typeof config.assist_satellite_enabled !== "undefined") moodFx.setIdleSequenceEnabled(!!config.assist_satellite_enabled && !config.idle_enabled);
@@ -28,6 +37,16 @@ function applyConfig(config={}) {
 }
 function handleMessage(payload) {
     if (!payload || typeof payload !== "object") return;
+    const c=payload.config || payload;
+    if((emotionDebug || c.emotion_debug===true) && ['nabu_macs:init','nabu_macs:config','nabu_macs:mood'].includes(payload.type)) {
+        // Only canonical mood/config flags: never log payloads or Assist text.
+        console.info('[Nabu emotion] iframe', {type:payload.type,
+            mood:MOODS.includes(payload.mood)?payload.mood:null,
+            emotion:MOODS.includes(c.emotion)?c.emotion:null,
+            enabled:c.emotion_enabled!==false,intensity:Number.isFinite(Number(c.emotion_intensity))?Number(c.emotion_intensity):null,
+            mixPresent:!!c.emotion_mix && Object.keys(c.emotion_mix).length>0,
+            personality:c.personality_enabled===true,animations:payload.animations_enabled});
+    }
     switch(payload.type) {
       case "nabu_macs:init":
         applyConfig(payload.config); coordinator.media(payload.media);

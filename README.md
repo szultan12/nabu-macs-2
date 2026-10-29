@@ -4,7 +4,7 @@ Animált 3D-avatar és Lovelace-kártya Home Assistanthez. A kártya 26 érzelem
 GLB-morph alapú arcmimikával, médialejátszóhoz kapcsolható beszédanimációval,
 természetes szem- és fejmozgással, valamint személyiségreakciókkal működik.
 
-**Verzió:** `2.0.0-dev.16`  
+**Verzió:** `2.0.0-dev.17`
 **Állapot:** fejlesztői kiadás. A HACS Action és hassfest még nem futott le, és
 valódi Home Assistant telepítési/eltávolítási próba sincs igazolva. A minimális
 támogatott Home Assistant verziót még nem határoztuk meg.
@@ -29,7 +29,7 @@ klasszikus HACS menüpont megváltozhat.
 
 Az integráció Storage módban automatikusan regisztrálja a saját Lovelace
 erőforrását. YAML-erőforrás esetén az URL
-`/nabu_macs/macs.js?v=2.0.0-dev.16`, a típus `module`. Részletes lépések és
+`/nabu_macs/macs.js?v=2.0.0-dev.17`, a típus `module`. Részletes lépések és
 visszaállítás: [telepítési útmutató](docs/INSTALL.hu.md).
 
 ## Médialejátszó és adatvédelem

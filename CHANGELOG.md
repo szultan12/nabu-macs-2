@@ -1,5 +1,13 @@
 # Változásnapló
 
+## 2.0.0-dev.17
+
+- Mentett emotion_mix nem maszkolja az explicit Lovelace érzelmet.
+- Kikapcsolható, adatminimalizált card/iframe/controller/GLB Console-diagnosztika.
+- Valódi morph-visszaolvasás és offline böngészős regressziós teszt.
+- Kiadási ZIP készítése duplikált licencek nélkül.
+
+
 ## 2.0.0-dev.16 – 2026-10-29
 
 - A Nabu saját forráskódjának MIT-licence és szerzői jogi sora; a MACS upstream

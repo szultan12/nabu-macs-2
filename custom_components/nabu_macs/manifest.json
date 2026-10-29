@@ -14,5 +14,5 @@
   "loggers": [
     "custom_components.nabu_macs"
   ],
-  "version": "2.0.0-dev.16"
+  "version": "2.0.0-dev.17"
 }

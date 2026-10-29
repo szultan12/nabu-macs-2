@@ -251,6 +251,16 @@ export class MacsCard extends HTMLElement {
     _postToIframe(payload) {
         if (!this._messagePoster) return;
         // Always target the iframe origin to avoid cross-origin leaks.
+        if (this._config?.emotion_debug === true && ['nabu_macs:init','nabu_macs:config','nabu_macs:mood'].includes(payload.type)) {
+            const c = payload.config || payload;
+            console.info('[Nabu emotion] card', {
+                selected: normalizeEmotionConfig(this._config).emotion,
+                source: Object.hasOwn(this._config, 'emotion') ? 'lovelace' : 'select',
+                selectMood: normMood(this._hass?.states?.[resolveEntityId(this._config, MOOD_ENTITY_ID)]?.state ?? 'idle'),
+                sent: c.emotion || payload.mood, type: payload.type,
+                legacyMixPresent: Object.keys(normalizeEmotionConfig(this._config).emotion_mix).length > 0
+            });
+        }
         this._messagePoster.post(payload);
     }
 
@@ -263,6 +273,9 @@ export class MacsCard extends HTMLElement {
         return {
             ...normalizeVisualConfig(this._config),
             ...normalizeEmotionConfig(this._config),
+            // A saved legacy mix must not mask an explicit Lovelace selection.
+            ...(Object.hasOwn(this._config, 'emotion') ? {emotion_mix: {}} : {}),
+            emotion_debug: this._config.emotion_debug === true,
             // Send one resolved mood through both the config and mood channels.
             // An explicit Lovelace emotion is the manual source; HA's select is
             // used when no emotion was saved in the card config.
