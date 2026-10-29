@@ -1,0 +1,15 @@
+{
+  "debugTargets": [
+    {"key":"card","label":"Card","filename":"MacsCard.js"},
+    {"key":"editor","label":"Editor","filename":"MacsCardEditor.js"},
+    {"key":"assist_pipeline","label":"Assist Pipeline","filename":"assistPipeline.js"},
+    {"key":"assist_satellite","label":"Assist Satellite","filename":"assistSatellite.js"},
+    {"key":"message_poster","label":"Message Poster","filename":"messagePoster.js"},
+    {"key":"message_listener","label":"Message Listener","filename":"messageListener.js"},
+    {"key":"frontend","label":"Frontend","filename":"MacsFrontend.js"},
+    {"key":"assist_bridge","label":"Assist Bridge","filename":"assist-bridge.js"},
+    {"key":"mood_fx","label":"Mood Effects","filename":"moodFx.js"},
+    {"key":"avatar_3d","label":"3D Avatar","filename":"avatar3d.js"},
+    {"key":"personality","label":"Personality","filename":"reactionEngine.js"}
+  ]
+}

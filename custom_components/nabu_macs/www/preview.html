@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="hu"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nabu MACS · Offline labor</title><link rel="stylesheet" href="preview.css"></head>
+<body><main>
+<header><div><p class="eyebrow">NABU MACS / 2.0</p><h1>Nabu karakterlabor</h1><p class="subtitle">Animált 3D Nabu-avatar · helyi szimuláció</p></div><span class="badge">OFFLINE LABOR</span></header>
+<div class="workspace"><section class="stage-panel" aria-label="Élő karakter"><iframe id="character" title="Nabu 3D karakter" src="macs.html?edit=1"></iframe><div class="caption"><span>Animált 3D Nabu</span><span id="status" role="status">Kapcsolódás…</span></div></section>
+<aside><p class="eyebrow">PRÓBÁLD KI</p>
+<label>Hangulat<select id="mood"></select></label><label>Érzelmi intenzitás<input id="intensity" type="range" min="0" max="100" value="100"></label>
+<label>Médialejátszó állapota<select id="media"><option value="idle">idle</option><option value="playing">playing</option><option value="paused">paused</option></select></label>
+<label>Beszédstílus<select id="speech-style"><option>auto</option><option>normal</option><option>excited</option><option>grumpy</option></select></label>
+<label class="toggle"><input id="natural" type="checkbox" checked>Természetes mozgás</label><label class="toggle"><input id="idle" type="checkbox">Tétlenség szimulálása</label>
+<button id="wake" type="button">Ébredés / dupla pislogás</button><label class="toggle"><input id="personality" type="checkbox" checked>Személyiség (demó)</label>
+<label>Esemény<select id="event"><option value="assist_listening">Assist: ébresztőszó / figyel</option><option value="assist_processing">Assist: feldolgoz</option><option value="assist_responding">Assist: beszél</option><option value="assist_success">Assist: siker</option><option value="assist_failure">Assist: hiba</option><option value="automation_success">Automatizálás sikeres</option><option value="device_error">Eszközhiba</option><option value="alarm">Riasztás</option><option value="washer_done">Mosógép kész</option><option value="dryer_done">Szárítógép kész</option><option value="doorbell">Ajtócsengő</option><option value="notification">Értesítés</option></select></label><button id="trigger" type="button">Esemény szimulálása</button>
+<button id="subtitle" type="button">Assist-párbeszéd szimulálása</button><label>Animációsebesség<input id="speed" type="range" min="0.25" max="2" step="0.05" value="1"></label>
+<label>Animációs FPS<select id="animation-fps"><option value="30">30 FPS – energiatakarékos</option><option value="60">60 FPS – folyamatosabb</option></select></label>
+<label>Grafikai minőség<select id="quality"><option value="low">Takarékos</option><option value="balanced" selected>Kiegyensúlyozott</option><option value="high">Magas</option></select></label>
+<label class="toggle"><input id="reduced" type="checkbox">Csökkentett mozgás</label><label class="toggle"><input id="animations" type="checkbox" checked>Animációk</label>
+<label>Karakter mérete<input id="size" type="range" min="60" max="120" value="100"></label><label>Fényudvar<input id="glow" type="range" min="0" max="100" value="70"></label>
+<button id="fullscreen" type="button">Teljes képernyő</button><details><summary>Profil mentése / betöltése</summary><textarea id="profile" rows="5" aria-label="Konfiguráció JSON"></textarea><button id="export" type="button">Export</button><button id="import" type="button">Import</button><p id="profile-status" role="status"></p></details><pre id="diagnostics" aria-label="Teljesítménydiagnosztika">Mérés indul…</pre></aside></div>
+<footer><span>3D AVATAR · 26 ÉRZELEM · ÉLŐ ANIMÁCIÓK</span><p>Ez a labor csak helyi, szimulált állapotokat küld az avatarmodulnak. Nem kapcsolódik Home Assistant-rendszerhez és nem vezérel eszközöket.</p></footer>
+</main><script type="module" src="preview.js"></script></body></html>

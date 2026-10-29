@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nabu MACS 2.0</title>
+  <script>
+    const params=new URLSearchParams(location.search), version=params.get('v');
+    if(version) window.__NABU_MACS_VERSION__=version;
+    window.__NABU_MACS_WITH_VERSION__=path=>version?`${path}${path.includes('?')?'&':'?'}v=${encodeURIComponent(version)}`:path;
+    const link=document.createElement('link');link.rel='stylesheet';link.href=window.__NABU_MACS_WITH_VERSION__('frontend/styles/base.css');document.head.append(link);
+  </script>
+  <style>
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#02070c;color:#ddf8ff;font-family:system-ui,sans-serif}
+    body{--nabu-glow-strength:70;--nabu-size:1;}
+    .stage{position:fixed;inset:0;display:grid;place-items:center;z-index:1;padding:0;transform:none}
+    #avatar3d{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+    #avatar3d::before{content:"";position:absolute;z-index:0;left:50%;top:50%;width:min(82vw,72vh);height:min(76vh,88vw);transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(30,190,255,var(--nabu-glow-opacity,.546)) 0%,rgba(20,145,255,var(--nabu-glow-falloff,.306)) 38%,rgba(0,100,255,0) 74%);filter:blur(var(--nabu-glow-blur,28px));pointer-events:none}
+    #avatar3d[hidden]{display:none} #avatar3d canvas{position:relative;z-index:1;width:100%;height:100%;display:block}
+    #char{position:absolute;inset:0;pointer-events:none}
+    #messages{position:fixed;z-index:4;left:50%;bottom:2vh;transform:translateX(-50%);width:min(600px,90vw);max-height:22vh;overflow:hidden;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+    #messages:empty{display:none} #messages .message{padding:8px 12px;border-radius:12px;background:#081923cc;text-align:center}
+    @media(max-width:600px){#messages{bottom:1vh;max-height:18vh}}
+  </style>
+</head>
+<body>
+  <main class="stage"><div id="avatar3d" aria-label="Nabu 3D avatar"></div></main>
+  <div id="messages" aria-live="polite"></div>
+  <div id="nabu-notification" role="status" hidden></div><div id="nabu-subtitle" role="status" hidden></div><div id="debug" hidden></div>
+  <script type="module" src="frontend/scripts/MacsFrontend.js"></script>
+</body>
+</html>

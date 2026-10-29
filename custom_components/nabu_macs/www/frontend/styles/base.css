@@ -1,0 +1,4 @@
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#02070c;color:#ddf8ff;font-family:system-ui,sans-serif}
+body{touch-action:manipulation}
+#nabu-notification,#nabu-subtitle{position:fixed;z-index:120;left:10%;right:10%;padding:12px 18px;border:1px solid #37677a;border-radius:14px;background:#081923ed;color:#ddf8ff;font:16px/1.5 system-ui,sans-serif;text-align:center;overflow-wrap:anywhere;pointer-events:none}
+#nabu-notification{top:8%}#nabu-subtitle{bottom:14%}

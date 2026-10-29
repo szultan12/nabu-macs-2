@@ -1,0 +1,33 @@
+set_mood:
+  name: Set mood
+  description: Set the visual mood of the Nabu 3D avatar.
+  fields:
+    mood:
+      required: true
+      selector:
+        select:
+          options: [bored, confused, happy, idle, listening, sad, sleeping, surprised, thinking, angry, furious, grumpy, sassy, annoyed, curious, shocked, scared, embarrassed, love, excited, proud, suspicious, sleepy, laughing, troll, worried]
+set_animations_enabled:
+  name: Set animations enabled
+  description: Enable or pause the Nabu avatar animations.
+  fields:
+    animations_enabled:
+      required: true
+      selector:
+        boolean:
+send_user_message:
+  name: Send user message
+  description: Show a user dialogue turn in the Nabu card.
+  fields:
+    message:
+      required: true
+      selector:
+        text:
+send_assistant_message:
+  name: Send assistant message
+  description: Show an assistant dialogue turn in the Nabu card.
+  fields:
+    message:
+      required: true
+      selector:
+        text:

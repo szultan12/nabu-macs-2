@@ -1,0 +1,3 @@
+* text=auto eol=lf
+# Preserve upstream asset bytes for the provenance/hash contract.
+custom_components/nabu_macs/www/frontend/styles/themes/default.css -text

@@ -1,0 +1,12 @@
+{
+  "entity": {
+    "select": {"mood": {"name": "Mood"}},
+    "switch": {"animations_enabled": {"name": "Animations Enabled"}}
+  },
+  "config": {
+    "abort": {
+      "already_configured": "Nabu MACS is already configured.",
+      "single_instance_allowed": "Only one Nabu MACS integration is supported; use multiple cards."
+    }
+  }
+}
