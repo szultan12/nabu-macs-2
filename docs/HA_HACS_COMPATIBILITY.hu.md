@@ -30,7 +30,7 @@ nem bizonyít élő Home Assistant-kompatibilitást.
 | HACS kiadási ZIP | PASS, helyi | `dist/nabu_macs.zip` a Nabu integráció fájljait tartalmazza közvetlenül a ZIP gyökerében; nincs benne MACS, labor vagy tesztkód |
 | HACS repository struktúra – fejlesztői ág | FAIL | Fejlesztői ág `custom_components/` alatt a régi `macs` és a `nabu_macs` mappa is szerepel; ezt az ágat nem szabad publikálni |
 | HACS repository struktúra – `hacs-publish-prep` | PASS, statikus | Orphan publikációs ágban pontosan egy integration: `custom_components/nabu_macs`; a régi MACS és előzményei nincsenek az ág fájlfájában/előzményeiben |
-| `hacs.json` és HACS manifest | PASS, statikus | `name`, ZIP release/asset neve, `hide_default_branch=false`; manifest dokumentáció, issue tracker, codeowner és verzió ellenőrizve |
+| `hacs.json` és HACS manifest | PASS, statikus | `name`, ZIP release/asset neve, `hide_default_branch=true`; manifest dokumentáció, issue tracker, codeowner és verzió ellenőrizve |
 | HACS Action / `hassfest` | NOT TESTED | Nincs helyben `hacs`/HACS-validátor, Docker CLI vagy GitHub Actions futtatás. Futtatandó a publikáció után; statikus ellenőrzés nem HACS-validáció |
 | HACS custom repository hozzáadás | NOT TESTED | A megadott GitHub repository üres és privát. HACS csak nyilvános GitHub repositoryt támogat |
 | Gyökér licenc felismerése | PASS, statikus | `LICENSE` teljes MIT-szöveg és Copyright (c) 2026 szultan12; a MACS-eredetű források licencét a csomagban megőrzött `LICENSE.upstream` külön kezeli; HACS Action megerősítése még szükséges |

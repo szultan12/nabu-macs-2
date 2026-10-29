@@ -1,5 +1,12 @@
 # Változásnapló
 
+## HACS metaadat-javítás (dev.17 után)
+
+- Alapértelmezett ág elrejtése: hide_default_branch true; ZIP-release mód változatlan.
+- A dev.17 prerelease és ZIP-csatolmány API-ellenőrzése; magyar verzióválasztási
+  és helyreállítási útmutató, HA-adatok módosítása nélkül.
+
+
 ## 2.0.0-dev.17
 
 - Mentett emotion_mix nem maszkolja az explicit Lovelace érzelmet.

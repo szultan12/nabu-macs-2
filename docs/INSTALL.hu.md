@@ -2,9 +2,9 @@
 
 ## Jelenlegi állapot
 
-A HACS csak nyilvános GitHub repositoryt tud hozzáadni. A repository publikálása
-nem része ennek az előkészítésnek. HACS telepítés, Docker teszt és éles Home
-Assistant telepítés nem történt.
+A felhasználó a dev.16 verziót HACS-on keresztül már telepítette. A jelenlegi
+munkamenet kizárólag helyi forrásmódosítás és nyilvános GitHub API-lekérdezés;
+Home Assistant-állapothoz nem kapcsolódtunk.
 
 A HACS integráció és a Home Assistant Marketplace publikálási folyamata verziótól
 függően változik. A HACS dokumentációja egy repositoryban egy integrációt ír elő;
@@ -51,11 +51,11 @@ nyilvános terjesztési jogukat a forráskód MIT-licence nem rendezi. Részlete
    meglévő dashboard `conditional` kártyáját ne cseréld le automatikusan.
 
 Az integráció Storage Lovelace módban automatikusan regisztrálja a saját
-`/nabu_macs/macs.js?v=2.0.0-dev.16` erőforrást. YAML Lovelace-erőforrások esetén
+`/nabu_macs/macs.js?v=2.0.0-dev.17` erőforrást. YAML Lovelace-erőforrások esetén
 kézzel add hozzá modul típussal:
 
 ```yaml
-url: /nabu_macs/macs.js?v=2.0.0-dev.16
+url: /nabu_macs/macs.js?v=2.0.0-dev.17
 type: module
 ```
 
@@ -73,8 +73,10 @@ Home Assistantban még nem tesztelt.
 A `hacs.json` `zip_release` beállítása miatt tagelt GitHub release-hez csatolni
 kell pontosan `nabu_macs.zip` nevű assetet. A ZIP gyökerében közvetlenül a
 `custom_components/nabu_macs/` fájljai találhatók. A HACS `filename` és a release
-asset nevét egyeztesd. Az aktuális `2.0.0-dev.16` helyi archívum tesztelési
-artifact, nem publikált release.
+asset nevét egyeztesd. A GitHub API-val ellenőrizve: a `v2.0.0-dev.17` kiadás publikált, nem draft,
+viszont **prerelease**. A `nabu_macs.zip` asset állapota `uploaded`, mérete
+38 734 847 bájt. Ez a kiadás metaadatainak ellenőrzése, nem a távoli ZIP
+tartalmának vagy a telepítésnek a validációja.
 
 ## Frissítés és visszaállítás
 
@@ -94,3 +96,52 @@ visszaállításával, majd Home Assistant újraindítással végezhető.
 
 Az eredeti MACS, annak dashboard-kártyája és erőforrása nem része ennek az
 útmutatónak; azokat ez a telepítés nem módosítja.
+
+
+## Verzióválasztás helyreállítása (dev.17)
+
+A `hide_default_branch: true` elrejti az alapértelmezett ágat a letölthető
+verziók közül. A `zip_release: true` és `filename: nabu_macs.zip` megmarad.
+A HACS dokumentációja szerint publikált GitHub Release esetén a tag a verzió;
+önmagában egy tag létrehozása nem elég. A kapcsoló nem írja át a már telepített
+verzió nyilvántartását, és nem teszi automatikusan láthatóvá az előzetes kiadást.
+
+1. A repository frissített `hacs.json` fájljának feltöltése után frissítsd a
+   Nabu repository adatait a HACS felületén (a verzió szerinti frissítés vagy
+   újratöltés menüponttal), majd nyisd meg újra az oldalát.
+2. Engedélyezd a Nabu előzetes kiadásait. HACS 2-ben a repositoryhoz tartozó
+   prerelease kapcsoló entitása alapból letiltott lehet: engedélyezd az entitást,
+   majd kapcsold be. Régebbi felületen ez a béta verziók megjelenítése lehet.
+3. Az újraletöltés/verzióválasztás párbeszédben kifejezetten a
+   `v2.0.0-dev.17` kiadást válaszd. Ne válaszd a `main` ágat vagy az `e13dcf3`
+   commitot. Telepítés előtt a felkínált célverziót ellenőrizd.
+4. Ha továbbra is csak a commit jelenik meg, ellenőrizd a kiadás láthatóságát,
+   a prerelease kapcsolót és a HACS naplóban a GitHub API/korlátozási hibákat.
+   Szükség esetén a HACS integráció felületi újratöltése, illetve egy felhasználó
+   által kezdeményezett HA-újraindítás után ismét frissítsd a repository adatait.
+5. Sikeres letöltés után indítsd újra a Home Assistantot, frissítsd a böngészőt,
+   majd ellenőrizd a telepített verziót és a Nabu erőforrás URL-jében a dev.17-et.
+
+A régi commit megjelenhet a *jelenleg telepített* verzió mezőben is; ez önmagában
+nem jelenti, hogy a következő letöltés célja is az. A HACS forráskódjában külön
+mező az installed_version/installed_commit, selected_tag és show_beta. Ezek
+helyi értékei ebben a munkamenetben nem lettek kiolvasva. Ne módosíts HA-adatbázist
+vagy `.storage` fájlt, és ne töröld az integrációt a verzióválasztás javításához.
+
+## A repository tulajdonosának kiadási teendői
+
+- Töltsd fel az új helyi commitot a publikációs ágról a GitHub `main` ágára:
+  `git push origin hacs-publish-prep:main` (ezt a fejlesztési munkamenet nem futtatja).
+- Ellenőrizd a HACS Action sikerét. A dev.17 Release és csatolmány már létezik;
+  a tag áthelyezése, a kiadás törlése és a ZIP újrafeltöltése ehhez a
+  HACS-metaadat-módosításhoz nem szükséges.
+- A dev.17 maradjon előzetes kiadás. A kliensoldali béta kapcsolót a fenti
+  lépésekkel engedélyezd; egy későbbi új kiadásnál annak tagjén is legyen már
+  `hide_default_branch: true`.
+- Ha a HACS az adott telepítésben régi metaadatot tart meg, előbb a felületi
+  újratöltési lépésekkel ellenőrizd az eredményt. A távoli HACS futását és a
+  kliens tényleges verzióválasztását csak a felhasználó tudja itt igazolni.
+
+Források: [HACS manifest és verziók](https://www.hacs.dev/docs/publish/start/),
+[prerelease kapcsolók](https://www.hacs.dev/docs/use/entities/switch/),
+[dev.17 Release](https://github.com/szultan12/nabu-macs-2/releases/tag/v2.0.0-dev.17).

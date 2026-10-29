@@ -2,5 +2,5 @@
   "name": "Nabu MACS",
   "zip_release": true,
   "filename": "nabu_macs.zip",
-  "hide_default_branch": false
+  "hide_default_branch": true
 }
