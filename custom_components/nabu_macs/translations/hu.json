@@ -1,0 +1,69 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "A Nabu MACS már be van állítva.",
+      "single_instance_allowed": "Csak egy Nabu MACS integrációbejegyzés használható. Ezzel a bejegyzéssel több Lovelace-kártyát is használhatsz."
+    },
+    "step": {
+      "user": {
+        "description": "A Nabu MACS integráció beállítása. Egy integrációbejegyzés több Lovelace-kártyát is kiszolgálhat.",
+        "title": "Nabu MACS beállítása"
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "mood": {
+        "name": "Hangulat"
+      }
+    },
+    "switch": {
+      "animations_enabled": {
+        "name": "Animációk engedélyezve"
+      }
+    }
+  },
+  "services": {
+    "send_assistant_message": {
+      "description": "Asszisztens párbeszédsor megjelenítése a Nabu-kártyán.",
+      "fields": {
+        "message": {
+          "description": "A megjelenítendő asszisztensüzenet.",
+          "name": "Üzenet"
+        }
+      },
+      "name": "Asszisztensüzenet küldése"
+    },
+    "send_user_message": {
+      "description": "Felhasználói párbeszédsor megjelenítése a Nabu-kártyán.",
+      "fields": {
+        "message": {
+          "description": "A megjelenítendő felhasználói üzenet.",
+          "name": "Üzenet"
+        }
+      },
+      "name": "Felhasználói üzenet küldése"
+    },
+    "set_animations_enabled": {
+      "description": "A Nabu-avatar animációinak engedélyezése vagy szüneteltetése.",
+      "fields": {
+        "animations_enabled": {
+          "description": "A Nabu-avatar animációi legyenek-e engedélyezve.",
+          "name": "Animációk engedélyezve"
+        }
+      },
+      "name": "Animációk beállítása"
+    },
+    "set_mood": {
+      "description": "A Nabu 3D-avatar hangulatának beállítása.",
+      "fields": {
+        "mood": {
+          "description": "Az avataron megjelenítendő hangulat.",
+          "name": "Hangulat"
+        }
+      },
+      "name": "Hangulat beállítása"
+    }
+  },
+  "title": "Nabu MACS"
+}

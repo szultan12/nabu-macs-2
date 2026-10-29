@@ -1,0 +1,69 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Nabu MACS is already configured.",
+      "single_instance_allowed": "Only one Nabu MACS integration entry is supported. Use multiple Lovelace cards with this entry."
+    },
+    "step": {
+      "user": {
+        "description": "Set up the Nabu MACS integration. One integration entry can serve multiple Lovelace cards.",
+        "title": "Set up Nabu MACS"
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "mood": {
+        "name": "Mood"
+      }
+    },
+    "switch": {
+      "animations_enabled": {
+        "name": "Animations enabled"
+      }
+    }
+  },
+  "services": {
+    "send_assistant_message": {
+      "description": "Show an assistant dialogue turn in the Nabu card.",
+      "fields": {
+        "message": {
+          "description": "The assistant message to display.",
+          "name": "Message"
+        }
+      },
+      "name": "Send assistant message"
+    },
+    "send_user_message": {
+      "description": "Show a user dialogue turn in the Nabu card.",
+      "fields": {
+        "message": {
+          "description": "The user message to display.",
+          "name": "Message"
+        }
+      },
+      "name": "Send user message"
+    },
+    "set_animations_enabled": {
+      "description": "Enable or pause the Nabu avatar animations.",
+      "fields": {
+        "animations_enabled": {
+          "description": "Whether Nabu avatar animations are enabled.",
+          "name": "Animations enabled"
+        }
+      },
+      "name": "Set animations enabled"
+    },
+    "set_mood": {
+      "description": "Set the visual mood of the Nabu 3D avatar.",
+      "fields": {
+        "mood": {
+          "description": "The mood to display on the Nabu avatar.",
+          "name": "Mood"
+        }
+      },
+      "name": "Set mood"
+    }
+  },
+  "title": "Nabu MACS"
+}

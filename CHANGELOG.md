@@ -2,6 +2,8 @@
 
 ## 2.0.0-dev.16 – 2026-10-29
 
+- Hassfest translation/manifest preflight javítások: rendezett manifestkulcsok,
+  üres config flow-hoz illesztett `strings.json`, teljes angol és magyar fordítás.
 - HACS-publikációs metaadatok és külön, csak Nabu integrációt tartalmazó
   publikációs ág előkészítése.
 - A publikus alapkonfiguráció nem tartalmaz fejlesztőspecifikus Home Assistant
